@@ -1,6 +1,6 @@
 var request = require("request"),
 	cheerio = require("cheerio"),
-	url = "https://www.aliexpress.com/wholesale?catId=0&initiative_id=AS_20170630222257&SearchText=bb+air+gun",
+	url = "https://www.aliexpress.com/item/SPF50-Sunscreen-Concealer-Moisturizing-Foundation-Makeup-Bare-Air-Cushion-BB-Cream/32591936867.html?spm=2114.01010208.3.1.Nyq55L&ws_ab_test=searchweb0_0,searchweb201602_5_10152_10065_10151_10068_10130_10084_10083_10080_10082_10081_10110_10178_10136_10137_519_10111_10060_10112_10113_10155_10114_437_10154_10056_10055_10054_10182_10059_303_100031_10099_10078_10079_10103_10073_10102_10052_10053_10142_10107_142_10050_10051,searchweb201603_49,ppcSwitch_5&btsid=c09cb5ee-fecb-4382-a8b5-a5c64ab872a7&algo_expid=3d1ecc9b-47d8-446d-a38a-817238ee96c0-0&algo_pvid=3d1ecc9b-47d8-446d-a38a-817238ee96c0",
     _ = require('underscore'),
 	
 	corpus = {},

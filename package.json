@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "request-promise": "^4.2.1",
-    "underscore": "^1.8.3"
+    "scrape-it": "^3.3.2",
+    "underscore": "^1.8.3",
+    "request": "^2.81.0"
   }
 }

@@ -6,6 +6,7 @@ const cheerio = require('cheerio'), // Basically jQuery for node.js
 var links_details = [];
 var main_details = [];
 var itemCount = 0;
+var pageCount = 0;
 var totalItems = 0;
 //********************testing******************
 /*var scrapping_options = {
@@ -17,7 +18,7 @@ var totalItems = 0;
 }*/
 //********************amazon india******************
 var scrapping_options = {
-    start_url : "http://www.amazon.in/s/ref=nb_sb_ss_c_2_7?url=search-alias%3Dbeauty&field-keywords=bb+cream&sprefix=bb+crea%2Caps%2C311&crid=3FQXJIXF3OP71",
+    start_url : "http://www.amazon.in/s/ref=nb_sb_ss_c_2_7?url=search-alias%3Dbeauty&field-keywords=bb+cream&sprefix=bb+crea%2Caps%2C488&crid=14DNCB48AJMFY",
     products_box : ".s-result-item",
     products_name : ".s-access-detail-page h2",
     products_link : ".s-access-detail-page",
@@ -25,10 +26,11 @@ var scrapping_options = {
     links_output_file : "amazon_links",
     details_outout_file : "amazon_details_new",
     scrapper_delay : 10000,
-    havePages : true,
+    havePages : false,
     start : 0,
     end : 100,
-    counter : 100
+    counter : 100,
+    search_page_limit : 10
 }
 //********************ali express******************
 /*var scrapping_options = {
@@ -37,9 +39,14 @@ var scrapping_options = {
     products_name : ".item .info h3 a",
     products_link : ".item .info h3 a",
     next_page_link : ".ui-pagination-navi .page-next",
-    links_output_file : "ali_goji_cream_links.json",
-    details_outout_file : "ali_goji_cream_product_details.json",
-    scrapper_delay : 10000
+    links_output_file : "ali_bb_cream_links.json",
+    details_outout_file : "ali_bb_cream_product_details.json",
+    scrapper_delay : 10000,
+    havePages : true,
+    start : 0,
+    end : 100,
+    counter : 100,
+    search_page_limit : 10
 }*/
 
 function Main(){
@@ -96,11 +103,12 @@ function sanatizeUrl(url){
 }
 
 function ScrapSearchPages($page){
-    console.log(new Date() +" scarrping search page started");
+    console.log(new Date() +" scarrping search page "+pageCount +" started");
     getLinks();
-    console.log(new Date() +" scarrping search page ended");
+    console.log(new Date() +" scarrping search page"+pageCount +" ended");
     var nextPage = $page(scrapping_options.next_page_link).attr('href');  //Make this generic
-    if(nextPage){
+    if(nextPage && pageCount < scrapping_options.search_page_limit){
+        pageCount++;
         scrapNextPage();
     } else {
         writeFiletoJSON(links_details,scrapping_options.links_output_file)
@@ -115,7 +123,7 @@ function ScrapSearchPages($page){
             itemCount++;
             var url = $page(link).find(scrapping_options.products_link).attr("href");
             var name = $page(link).find(scrapping_options.products_name).text();
-            console.log(url);
+            //console.log(url);
             //url = "http://quotes.toscrape.com"+url;  
             var link_obj = {
                     sno : itemCount,
@@ -216,12 +224,39 @@ function scrapPage(linkPage,links_details,current,max){
 // Scrapper function to get product details
 function ScrapDetails($sub_page){
     // ********** MAKE THIS GENERIC ***************** //
+
+    // AMAZON INDIA
+
     var data = {
+        product_link : linkPage.link,
         name : $sub_page("#title").text().replace(/[\n\t\r]/g,"").trim(),
         price : $sub_page("#priceblock_ourprice").text().replace(/[\n\t\r]/g,"").trim(),
         image : $sub_page("#landingImage").attr("src"),
         description : $sub_page("#feature-bullets").text().replace(/[\n\t\r]/g,"").trim()
     }
+
+    // ALI EXPRESS
+/*    
+    var temp_data = $sub_page('#j-detail-gallery-main script').get()[0].children[0].data ;
+    var images_string=temp_data.substring(temp_data.lastIndexOf("[")+1,temp_data.lastIndexOf("]"));
+    var data = {
+        product_link : linkPage.link,
+        name : $sub_page(".detail-main .product-name").text().replace(/[\n\t\r]/g,"").trim(),
+        price : $sub_page("#j-sku-price").text().replace(/[\n\t\r]/g,"").trim(),
+        rating : $sub_page(".percent-num").text().replace(/[\n\t\r]/g,"").trim(),
+        images : images_string.replace(/[\n\t\r]/g,"").trim(),
+        brnad_name : $sub_page("#product-prop-2 .propery-des").text().replace(/[\n\t\r]/g,"").trim(),
+        type : $sub_page("#product-prop-351 .propery-des").text().replace(/[\n\t\r]/g,"").trim(),
+        benefit : $sub_page("#product-prop-200001174 .propery-des").text().replace(/[\n\t\r]/g,"").trim(),
+        formulation : $sub_page("#product-prop-200001170 .propery-des").text().replace(/[\n\t\r]/g,"").trim(),
+        size : $sub_page("#product-prop-491 .propery-des").text().replace(/[\n\t\r]/g,"").trim(),
+        sublock : $sub_page("#product-prop-200001185 .propery-des").text().replace(/[\n\t\r]/g,"").trim(),
+        net_weight : $sub_page("#product-prop-200000581 .propery-des").text().replace(/[\n\t\r]/g,"").trim(),
+        skin_type : $sub_page("#product-prop-200001171 .propery-des").text().replace(/[\n\t\r]/g,"").trim(),
+        packagin_details : $sub_page("#j-product-desc .product-packaging-list").text().replace(/[\n\t\r]/g,"").trim(),
+        description_text : $sub_page(".description-content").text().replace(/[\n\t\r]/g,"").trim(),
+
+    }*/
     console.log(data);
     main_details.push(data);
 }
