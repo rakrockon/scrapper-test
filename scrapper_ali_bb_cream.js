@@ -93,9 +93,9 @@ function sanatizeUrl(url){
     if(!url.toLowerCase().includes("http:")){
         url = "https:"+url;
     }
-    if(url.toLowerCase().includes("slredirect")){
+    /*if(url.toLowerCase().includes("login.aliexpress.com")){
         return undefined;
-    }
+    }*/
     // uncomment if needed
     /*if(!url.toLowerCase().includes(scrapping_options.start_url.toLowerCase()))
         url = scrapping_options.start_url+url
