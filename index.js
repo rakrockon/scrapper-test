@@ -2,7 +2,8 @@ const scrapeIt = require("scrape-it");
 const cheerio = require('cheerio'), // Basically jQuery for node.js 
     _ = require('underscore'),
     rp = require('request-promise'),
-    fs = require('fs');
+    fs = require('fs'),
+    json2csv = require('json2csv');
 
 var quotes_Array = [];
 // Sample
@@ -75,6 +76,11 @@ rp(options)
         description_text : $sub_page(".description-content").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
 
     }
+    var csv = json2csv({ data: data });
+    fs.writeFile('file.csv', csv, function(err) {
+    if (err) throw err;
+    console.log('file saved');
+    });
     fs.writeFile('output.json', JSON.stringify(data, null, 4), function(err){
 
         console.log('File successfully written! - Check your project directory for the output.json file');

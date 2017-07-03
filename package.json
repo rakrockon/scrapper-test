@@ -9,9 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "json2csv": "^3.7.3",
+    "request": "^2.81.0",
     "request-promise": "^4.2.1",
     "scrape-it": "^3.3.2",
-    "underscore": "^1.8.3",
-    "request": "^2.81.0"
+    "underscore": "^1.8.3"
   }
 }

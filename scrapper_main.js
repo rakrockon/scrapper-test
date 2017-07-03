@@ -1,8 +1,8 @@
 const cheerio = require('cheerio'), // Basically jQuery for node.js 
     _ = require('underscore'),
     rp = require('request-promise'),
-    fs = require('fs');
-
+    fs = require('fs'),
+    json2csv = require('json2csv');
 var links_details = [];
 var main_details = [];
 var itemCount = 0;
@@ -206,7 +206,7 @@ function scrapPage(linkPage,links_details,current,max){
                 wait(scrapping_options.scrapper_delay);
                 scrapPage(links_details[current+1], links_details, current+1, max)
             } else {
-                writeFiletoJSON(main_details, scrapping_options.details_outout_file);
+                writeFiletoJSON(main_details, scrapping_options.details_outout_file+"_till_"+max);
                 var new_start = max+1;
                 var new_end = scrapping_options.counter + max;
                 if(new_end < totalItems){
