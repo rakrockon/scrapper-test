@@ -268,14 +268,14 @@ function ScrapDetails($sub_page,product){
 
 function writeFiletoJSON(object, file_name){
     fs.writeFile("ali_express/"+file_name+".json", JSON.stringify(object, null, 4), function(err){
-        console.log('File successfully written! - Check your project directory for the '+file_name+'.json file');
+        //console.log('File successfully written! - Check your project directory for the '+file_name+'.json file');
     });
 }
 function writeFiletoCSV(object, file_name){
     var csv = json2csv({ data: object });
     fs.writeFile("ali_express/"+file_name+'.csv', csv, function(err) {
         if (err) throw err;
-        console.log(file_name+'.csv file saved');
+        console.log("EXCEL SHEET is created"+file_name+'.csv file saved');
     });
 }
 
