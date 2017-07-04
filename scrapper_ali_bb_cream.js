@@ -41,13 +41,13 @@ var scrapping_options = {
     scrapper_delay : 15000,
     havePages : false,
     start : 0,
-    end : 20,
-    counter : 20,
-    search_page_limit : 1,
+    end : 1000,
+    search_page_limit : 0,
     products_box : "#hs-list-items .list-item",
     products_name : ".item .info h3 a",
     products_link : ".item .info h3 a",
     next_page_link : ".ui-pagination-navi .page-next",
+    counter : 20,
 }
 
 function Main(){
@@ -191,18 +191,18 @@ function scrapPage(linkPage,links_details,current,max){
             //console.log(linkPage.link)
             ScrapDetails($,linkPage);
             console.log(new Date() +" scarrping details page:"+linkPage.sno+" -from "+current+" of "+max+" ended");
-            console.log(main_details);
+            //console.log(main_details);
             writeFiletoJSON(main_details, scrapping_options.product_details_output_file+"_till_"+max);
             writeFiletoCSV(main_details, scrapping_options.product_details_output_file);
             if(current+1 !== max){
                 wait(scrapping_options.scrapper_delay);
                 scrapPage(links_details[current+1], links_details, current+1, max);
             } else {
-                var new_start = max+1;
+/*                var new_start = max+1;
                 var new_end = scrapping_options.counter + max;
                 if(new_end < totalItems){
                     scrapPage(links_details[new_start],links_details,new_start,new_end);
-                }
+                }*/
             }
         })
         .catch(function (err) {
@@ -229,8 +229,8 @@ function ScrapDetails($sub_page,product){
     var temp_data = $sub_page('#j-detail-gallery-main script').get()[0].children[0].data ;
     var images_string=temp_data.substring(temp_data.lastIndexOf("[")+1,temp_data.lastIndexOf("]"));
     var data = {
-        product_link : product.link,
         serial_no : product.sno,
+        product_link : product.link,
         name : $sub_page(".detail-main .product-name").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         price : $sub_page("#j-sku-price").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         rating : $sub_page(".percent-num").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
