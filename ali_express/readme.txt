@@ -1,0 +1,1 @@
+Get the CSV file only. The other files are not needed

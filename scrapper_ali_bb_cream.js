@@ -40,7 +40,7 @@ var scrapping_options = {
     product_details_output_file : "ali_bb_cream_product_details",
     scrapper_delay : 15000,
     havePages : false,
-    start : 100,
+    start : 0,
     end : 200,
     counter : 100,
     search_page_limit : 1,
