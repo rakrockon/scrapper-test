@@ -10,30 +10,7 @@ var itemCount = 0;
 var pageCount = 0;
 var totalItems = 0;
 var iteration = 1;
-//********************testing******************
-/*var scrapping_options = {
-    start_url : "http://quotes.toscrape.com",
-    products_box : ".quote",
-    products_name : ".author",
-    products_link : "span a",
-    next_page_link : ".next a"
-}*/
-//********************amazon india******************
-/*var scrapping_options = {
-    start_url : "http://www.amazon.in/s/ref=nb_sb_ss_c_2_7?url=search-alias%3Dbeauty&field-keywords=bb+cream&sprefix=bb+crea%2Caps%2C488&crid=14DNCB48AJMFY",
-    products_box : ".s-result-item",
-    products_name : ".s-access-detail-page h2",
-    products_link : ".s-access-detail-page",
-    next_page_link : "#pagnNextLink",
-    links_output_file : "amazon_links",
-    product_details_output_file : "amazon_details_new",
-    scrapper_delay : 10000,
-    havePages : false,
-    start : 0,
-    end : 100,
-    counter : 100,
-    search_page_limit : 10
-}*/
+
 //********************ali express******************
 var scrapping_options = {
     start_url : "https://www.aliexpress.com/wholesale?catId=0&initiative_id=AS_20170703023612&SearchText=bb+cream",
@@ -275,7 +252,7 @@ function writeFiletoJSON(object, file_name){
 }
 function writeFiletoCSV(object, file_name){
     var csv = json2csv({ data: object });
-    fs.writeFile("ali_express/"+file_name+'.csv', csv, function(err) {
+    fs.writeFile("ali_express/"+file_name+'.xlsx', csv, function(err) {
         if (err) throw err;
         console.log("EXCEL SHEET is created"+file_name+'.csv file saved');
     });
