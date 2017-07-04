@@ -39,7 +39,7 @@ var scrapping_options = {
     links_output_file : "ali_bb_cream_links",
     product_details_output_file : "ali_bb_cream_product_details",
     scrapper_delay : 15000,
-    havePages : false,
+    havePages : true,
     start : 0,
     end : 20,
     counter : 20,
@@ -191,7 +191,7 @@ function scrapPage(linkPage,links_details,current,max){
             //console.log(linkPage.link)
             ScrapDetails($,linkPage);
             console.log(new Date() +" scarrping details page:"+linkPage.sno+" -from "+current+" of "+max+" ended");
-            console.log(main_details);
+            //console.log(main_details);
             writeFiletoJSON(main_details, scrapping_options.product_details_output_file+"_till_"+max);
             writeFiletoCSV(main_details, scrapping_options.product_details_output_file);
             if(current+1 !== max){
@@ -225,7 +225,12 @@ function ScrapDetails($sub_page,product){
     }*/
 
     // ALI EXPRESS
-    
+    var image_box = $sub_page("#j-image-thumb-list li");
+    var images = [];
+    image_box.each(function (i, img) {
+        images.push($sub_page(img).find('img').attr('src'))
+    });
+    var variation_check =  $sub_page('#j-sku-list-2 li');
     var temp_data = $sub_page('#j-detail-gallery-main script').get()[0].children[0].data ;
     var images_string=temp_data.substring(temp_data.lastIndexOf("[")+1,temp_data.lastIndexOf("]"));
     var data = {
@@ -233,19 +238,29 @@ function ScrapDetails($sub_page,product){
         serial_no : product.sno,
         name : $sub_page(".detail-main .product-name").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         price : $sub_page("#j-sku-price").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
-        rating : $sub_page(".percent-num").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
-        images : images_string.replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
+        image_1 : images[0]?images[0] : "",
+        image_2 : images[1]?images[1] : "",
+        image_3 : images[2]?images[2] : "",
+        image_4 : images[3]?images[3] : "",
+        image_5 : images[4]?images[4] : "",
+        image_6 : images[5]?images[5] : "",
+        variation : variation_check.length > 0 ? "Yes" : "No",
         brnad_name : $sub_page("#product-prop-2 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         type : $sub_page("#product-prop-351 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
+        item_type : $sub_page("#product-prop-200000204 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         benefit : $sub_page("#product-prop-200001174 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         formulation : $sub_page("#product-prop-200001170 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
+        ingrident : $sub_page("#product-prop-1413 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
+        use : $sub_page("#product-prop-19476 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         size : $sub_page("#product-prop-491 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
+        feature : $sub_page("#product-prop-973 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
+        material : $sub_page("#product-prop-10 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         sublock : $sub_page("#product-prop-200001185 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         net_weight : $sub_page("#product-prop-200000581 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
+        essential_oil_type : $sub_page("#product-prop-200000578 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
+        hair_type : $sub_page("#product-prop-200007788 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         skin_type : $sub_page("#product-prop-200001171 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
-        packagin_details : $sub_page("#j-product-desc .product-packaging-list").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
-        description_text : $sub_page(".description-content").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
-
+        description : $sub_page(".ui-box-body .product-property-list").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim()
     }
     console.log(data.name);
     main_details.push(data);
