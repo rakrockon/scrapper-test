@@ -41,8 +41,8 @@ var scrapping_options = {
     scrapper_delay : 15000,
     havePages : false,
     start : 0,
-    end : 200,
-    counter : 100,
+    end : 20,
+    counter : 20,
     search_page_limit : 1,
     products_box : "#hs-list-items .list-item",
     products_name : ".item .info h3 a",
@@ -108,11 +108,11 @@ function ScrapSearchPages($page){
     getLinks();
     console.log(new Date() +" scarrping search page"+pageCount +" ended");
     var nextPage = $page(scrapping_options.next_page_link).attr('href');  //Make this generic
-    var max_search_page_limit = scrapping_options.search_page_limit == 0 ? 9999 : scrapping_options.search_page_limit
+    var max_search_page_limit = scrapping_options.search_page_limit == 0 ? 9999 : scrapping_options.search_page_limit;
+    writeFiletoJSON(links_details,scrapping_options.links_output_file);
     if(nextPage && pageCount < max_search_page_limit){
         pageCount++;
         scrapNextPage();
-        writeFiletoJSON(links_details,scrapping_options.links_output_file);
     } else {
         scrapLinks();
     }
@@ -188,14 +188,15 @@ function scrapPage(linkPage,links_details,current,max){
     rp(link_page_options)
         .then(function ($) {
             console.log(new Date() +" scarrping details page:"+linkPage.sno+" -from "+current+" of "+max+" started");
-            console.log(linkPage.link)
+            //console.log(linkPage.link)
             ScrapDetails($,linkPage);
             console.log(new Date() +" scarrping details page:"+linkPage.sno+" -from "+current+" of "+max+" ended");
+            console.log(main_details);
+            writeFiletoJSON(main_details, scrapping_options.product_details_output_file+"_till_"+max);
+            writeFiletoCSV(main_details, scrapping_options.product_details_output_file);
             if(current+1 !== max){
                 wait(scrapping_options.scrapper_delay);
                 scrapPage(links_details[current+1], links_details, current+1, max);
-                writeFiletoJSON(main_details, scrapping_options.product_details_output_file+"_till_"+max);
-                writeFiletoCSV(main_details, scrapping_options.product_details_output_file);
             } else {
                 var new_start = max+1;
                 var new_end = scrapping_options.counter + max;
