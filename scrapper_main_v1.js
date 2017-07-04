@@ -9,6 +9,7 @@ var main_details = [];
 var itemCount = 0;
 var pageCount = 0;
 var totalItems = 0;
+var iteration = 1;
 //********************testing******************
 /*var scrapping_options = {
     start_url : "http://quotes.toscrape.com",
@@ -37,7 +38,7 @@ var totalItems = 0;
 var scrapping_options = {
     start_url : "https://www.aliexpress.com/wholesale?catId=0&initiative_id=AS_20170703023612&SearchText=bb+cream",
     links_output_file : "ali_bb_cream_links",
-    product_details_output_file : "ali_bb_cream_product_details",
+    product_details_output_file : "ali",
     scrapper_delay : 15000,
     havePages : true,
     start : 0,
@@ -193,7 +194,7 @@ function scrapPage(linkPage,links_details,current,max){
             console.log(new Date() +" scarrping details page:"+linkPage.sno+" -from "+current+" of "+max+" ended");
             //console.log(main_details);
             writeFiletoJSON(main_details, scrapping_options.product_details_output_file+"_till_"+max);
-            writeFiletoCSV(main_details, scrapping_options.product_details_output_file);
+            writeFiletoCSV(main_details, scrapping_options.product_details_output_file+iteration);
             if(current+1 !== max){
                 wait(scrapping_options.scrapper_delay);
                 scrapPage(links_details[current+1], links_details, current+1, max);
@@ -203,6 +204,7 @@ function scrapPage(linkPage,links_details,current,max){
                 if(new_end < totalItems){
                     scrapPage(links_details[new_start],links_details,new_start,new_end);
                 }*/
+                iteration++
             }
         })
         .catch(function (err) {
