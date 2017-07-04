@@ -38,12 +38,12 @@ var scrapping_options = {
     start_url : "https://www.aliexpress.com/wholesale?catId=0&initiative_id=AS_20170703023612&SearchText=bb+cream",
     links_output_file : "ali_bb_cream_links",
     product_details_output_file : "ali_bb_cream_product_details",
-    scrapper_delay : 10000,
-    havePages : true,
+    scrapper_delay : 15000,
+    havePages : false,
     start : 100,
     end : 200,
     counter : 100,
-    search_page_limit : 10,
+    search_page_limit : 1,
     products_box : "#hs-list-items .list-item",
     products_name : ".item .info h3 a",
     products_link : ".item .info h3 a",
@@ -54,7 +54,7 @@ function Main(){
      
     if(scrapping_options.havePages){
         var links_data;
-        fs.readFile(scrapping_options.links_output_file+".json", 'utf8', function (err, data) {
+        fs.readFile("ali_express/"+scrapping_options.links_output_file+".json", 'utf8', function (err, data) {
             if (err) throw err;
             links_data = JSON.parse(data);
             totalItems = links_data.length;
@@ -112,8 +112,8 @@ function ScrapSearchPages($page){
     if(nextPage && pageCount < max_search_page_limit){
         pageCount++;
         scrapNextPage();
+        writeFiletoJSON(links_details,scrapping_options.links_output_file);
     } else {
-        writeFiletoJSON(links_details,scrapping_options.links_output_file)
         scrapLinks();
     }
 
@@ -189,7 +189,7 @@ function scrapPage(linkPage,links_details,current,max){
         .then(function ($) {
             console.log(new Date() +" scarrping details page:"+linkPage.sno+" -from "+current+" of "+max+" started");
             console.log(linkPage.link)
-            ScrapDetails($,linkPage.link);
+            ScrapDetails($,linkPage);
             console.log(new Date() +" scarrping details page:"+linkPage.sno+" -from "+current+" of "+max+" ended");
             if(current+1 !== max){
                 wait(scrapping_options.scrapper_delay);
@@ -211,7 +211,7 @@ function scrapPage(linkPage,links_details,current,max){
 }
 
 // Scrapper function to get product details
-function ScrapDetails($sub_page,product_link){
+function ScrapDetails($sub_page,product){
     // ********** MAKE THIS GENERIC ***************** //
 
     // AMAZON INDIA
@@ -228,7 +228,8 @@ function ScrapDetails($sub_page,product_link){
     var temp_data = $sub_page('#j-detail-gallery-main script').get()[0].children[0].data ;
     var images_string=temp_data.substring(temp_data.lastIndexOf("[")+1,temp_data.lastIndexOf("]"));
     var data = {
-        product_link : product_link,
+        product_link : product.link,
+        serial_no : product.sno,
         name : $sub_page(".detail-main .product-name").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         price : $sub_page("#j-sku-price").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         rating : $sub_page(".percent-num").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
@@ -250,13 +251,13 @@ function ScrapDetails($sub_page,product_link){
 }
 
 function writeFiletoJSON(object, file_name){
-    fs.writeFile(file_name+".json", JSON.stringify(object, null, 4), function(err){
+    fs.writeFile("ali_express/"+file_name+".json", JSON.stringify(object, null, 4), function(err){
         console.log('File successfully written! - Check your project directory for the '+file_name+'.json file');
     });
 }
 function writeFiletoCSV(object, file_name){
     var csv = json2csv({ data: object });
-    fs.writeFile(file_name+'.csv', csv, function(err) {
+    fs.writeFile("ali_express/"+file_name+'.csv', csv, function(err) {
         if (err) throw err;
         console.log(file_name+'.csv file saved');
     });
