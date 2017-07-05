@@ -13,15 +13,15 @@ var iteration = 1;
 
 //********************ali express******************
 var scrapping_options = {
-    start_url : "https://www.aliexpress.com/wholesale?catId=0&initiative_id=AS_20170703023612&SearchText=bb+cream",
-    links_output_file : "ali_bb_cream_links",
+    start_url : "https://www.aliexpress.com/category/66010313/makeup-sets.html?spm=2114.11010108.111.19.3oBXNU",
+    links_output_file : "ali_links",
     product_details_output_file : "ali",
     scrapper_delay : 15000,
-    havePages : true,
+    havePages : false,
     start : 0,
-    end : 1000,
-    search_page_limit : 0,
-    products_box : "#hs-list-items .list-item",
+    end : 10,
+    search_page_limit : 1,
+    products_box : ".list-item",
     products_name : ".item .info h3 a",
     products_link : ".item .info h3 a",
     next_page_link : ".ui-pagination-navi .page-next",
@@ -210,6 +210,7 @@ function ScrapDetails($sub_page,product){
         images.push($sub_page(img).find('img').attr('src'))
     });
     var variation_check =  $sub_page('#j-sku-list-2 li');
+    var variation_check1 =  $sub_page('#j-sku-list-1 li');
     var temp_data = $sub_page('#j-detail-gallery-main script').get()[0].children[0].data ;
     var images_string=temp_data.substring(temp_data.lastIndexOf("[")+1,temp_data.lastIndexOf("]"));
     var data = {
@@ -223,7 +224,7 @@ function ScrapDetails($sub_page,product){
         image_4 : images[3]?images[3] : "",
         image_5 : images[4]?images[4] : "",
         image_6 : images[5]?images[5] : "",
-        variation : variation_check.length > 0 ? "Yes" : "No",
+        variation : variation_check.length > 0 || variation_check1.length > 1 ? "Yes" : "No",
         brnad_name : $sub_page("#product-prop-2 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         type : $sub_page("#product-prop-351 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
         item_type : $sub_page("#product-prop-200000204 .propery-des").text().replace(/[\n\t\r]/g,"").replace(/\s+/g, " ").trim(),
@@ -252,7 +253,7 @@ function writeFiletoJSON(object, file_name){
 }
 function writeFiletoCSV(object, file_name){
     var csv = json2csv({ data: object });
-    fs.writeFile("ali_express/"+file_name+'.xlsx', csv, function(err) {
+    fs.writeFile("ali_express/"+file_name+'.csv', csv, function(err) {
         if (err) throw err;
         console.log("EXCEL SHEET is created"+file_name+'.csv file saved');
     });
