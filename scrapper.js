@@ -12,7 +12,7 @@ var nextPage;
 
 //********************ali express******************
 var scrapping_options = {
-    start_url : "https://www.aliexpress.com/category/66010313/makeup-sets.html",
+    start_url : "https://www.aliexpress.com/category/16080702/essential-oil.html?site=glo&g=y&attrRel=or&pvId=200000578-352949&isrefine=y",
     links_output_file : "ali_links",
     product_details_output_file : "ali",
     scrapper_delay : 15000,
@@ -51,8 +51,8 @@ function sanatizeUrl(url){
     if(!url.toLowerCase().includes("http:")){
         url = "https:"+url;
     }
-    var n = url.indexOf('?');
-    url = url.substring(0, n != -1 ? n : url.length);
+    //var n = url.indexOf('?');
+    //url = url.substring(0, n != -1 ? n : url.length);
     return url;
 }
 
@@ -97,7 +97,7 @@ function Main(search_url){
 function scrapLinks(links_details) {
     var max =  links_details.length;
     var start = 0;
-
+    console.log(links_details[start]);
     scrapPage(links_details[start],links_details,scrapping_options.start,scrapping_options.end);
 
     function scrapPage(linkPage,links_details,current,max){
@@ -114,17 +114,15 @@ function scrapLinks(links_details) {
                 console.log(new Date() +" scarrping details page:"+linkPage.sno);
                 wait(scrapping_options.scrapper_delay);
                 ScrapDetails($,linkPage);
-                writeFiletoJSON(main_details, scrapping_options.product_details_output_file+"_till_"+max);
-                writeFiletoCSV(main_details, scrapping_options.product_details_output_file+iteration);
+                writeFiletoJSON(main_details, scrapping_options.product_details_output_file);
+                writeFiletoCSV(main_details, scrapping_options.product_details_output_file);
                 
                 if(!links_details[current+1]){
+                    pageCount++;
                     Main(sanatizeUrl(nextPage));
                 }
                 if(current+1 !== max){
                     scrapPage(links_details[current+1], links_details, current+1, max);
-                }
-                if(current == 10){
-                    iteration++
                 }
             })
             .catch(function (err) {
@@ -138,8 +136,6 @@ function scrapLinks(links_details) {
             });
             var variation_check =  $sub_page('#j-sku-list-2 li');
             var variation_check1 =  $sub_page('#j-sku-list-1 li');
-            var temp_data = $sub_page('#j-detail-gallery-main script').get()[0].children[0].data ;
-            var images_string=temp_data.substring(temp_data.lastIndexOf("[")+1,temp_data.lastIndexOf("]"));
             var data = {
                 serial_no : product.sno,
                 product_link : product.link,
